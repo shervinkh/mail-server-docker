@@ -1,0 +1,10 @@
+[Unit]
+Description=RoundCube CleanUp Script
+Requires=mariadb
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/webapps/roundcubemail/bin/cleandb.sh
+
+[Install]
+WantedBy=multi-user.target

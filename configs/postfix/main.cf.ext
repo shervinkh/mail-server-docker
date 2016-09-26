@@ -1,0 +1,64 @@
+
+myhostname = example.com
+mydomain = example.com
+mydestination = localhost
+
+non_smtpd_milters=inet:127.0.0.1:8891, inet:127.0.0.1:8893
+smtpd_milters=inet:127.0.0.1:8891, inet:127.0.0.1:8893
+
+sender_canonical_maps = tcp:localhost:10001
+sender_canonical_classes = envelope_sender
+recipient_canonical_maps = tcp:localhost:10002
+recipient_canonical_classes= envelope_recipient,header_recipient
+
+policy-spf_time_limit = 3600s
+
+smtpd_recipient_restrictions =
+        permit_sasl_authenticated,
+        permit_mynetworks,
+        reject_unauth_destination,
+        check_policy_service unix:private/policy-spf
+
+smtpd_relay_restrictions         =
+
+smtpd_enforce_tls                = no
+smtpd_tls_loglevel               = 1
+smtpd_use_tls                    = yes
+smtpd_tls_key_file               = /data/cert/mail.key
+smtpd_tls_cert_file              = /data/cert/mail.crt
+smtp_tls_security_level          = may
+smtpd_tls_security_level         = may
+smtp_tls_loglevel                = 1
+
+smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3
+smtp_tls_mandatory_protocols=!SSLv2,!SSLv3
+smtpd_tls_protocols=!SSLv2,!SSLv3
+smtp_tls_protocols=!SSLv2,!SSLv3
+smtpd_tls_exclude_ciphers = aNULL, eNULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CDC3-SHA, KRB5-DE5, CBC3-SHA
+smtpd_tls_dh1024_param_file = /data/cert/mail_dhparams.pem
+
+virtual_alias_maps = proxy:mysql:/etc/postfix/virtual_alias_maps.cf
+virtual_mailbox_domains = proxy:mysql:/etc/postfix/virtual_mailbox_domains.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/virtual_mailbox_maps.cf
+virtual_mailbox_base = /data/mail
+virtual_mailbox_limit = 512000000
+virtual_minimum_uid = 5000
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+virtual_uid_maps = static:5000
+virtual_gid_maps = static:5000
+local_transport = virtual
+local_recipient_maps = $virtual_mailbox_maps
+transport_maps = hash:/etc/postfix/transport
+
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = /var/run/dovecot/auth-client
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
+smtpd_tls_auth_only = yes
+smtpd_tls_received_header = yes
+smtpd_sasl_local_domain = $mydomain
+broken_sasl_auth_clients = yes
+mailbox_size_limit = 0
+message_size_limit = 51200000
+

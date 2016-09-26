@@ -1,0 +1,19 @@
+server {
+    listen 8002;
+    server_name	    _;
+    root            /usr/share/webapps/postfixAdmin/;
+    index           index.php;
+    charset         utf-8;
+
+    add_header Strict-Transport-Security max-age=31536000;
+    # add_header X-Frame-Options DENY;
+
+    # auth_basic "Restricted area";
+    # auth_basic_user_file /etc/nginx/passwd;
+
+    location / {
+        try_files $uri $uri/ index.php;
+    }
+
+    include php.conf;
+}

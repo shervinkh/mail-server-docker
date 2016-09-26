@@ -1,0 +1,11 @@
+[Unit]
+Description=MailServer Container Initializer
+Before=mariadb.service dovecot.service php-fpm.service opendkim.service opendmarc.service nginx.service postfix.service postsrsd.service
+
+[Service]
+Type=oneshot
+ExecStart=/scripts/initializer.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

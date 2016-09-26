@@ -1,0 +1,5 @@
+
+policy-spf  unix  -       n       n       -       0       spawn
+     user=nobody argv=/usr/bin/policyd-spf
+submission inet n       -       n       -       -       smtpd
+

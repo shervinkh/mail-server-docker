@@ -1,0 +1,46 @@
+server {
+    listen 8001;
+    server_name	    _;
+    root            /usr/share/webapps/roundcubemail/;
+    index           index.php;
+    charset         utf-8;
+
+    access_log /var/log/nginx/roundcube_access.log;
+    error_log /var/log/nginx/roundcube_error.log;
+
+    # Favicon
+    location ~ ^/favicon.ico$ {
+        root /usr/share/webapps/roundcubemail/skins/classic/images;
+        log_not_found off;
+        access_log off;
+        expires max;
+    }
+    # Robots file
+    location ~ ^/robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+    # Deny Protected directories 
+    location ~ ^/(config|temp|logs)/ {
+        deny all;
+    }
+    location ~ ^/(README|INSTALL|LICENSE|CHANGELOG|UPGRADING)$ {
+        deny all;
+    }
+    location ~ ^/(bin|SQL)/ {
+        deny all;
+    }
+    # Hide .md files
+    location ~ ^/(.+\.md)$ {
+            deny all;
+    }
+    # Hide all dot files
+    location ~ ^/\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    include php.conf;
+}

@@ -1,0 +1,7 @@
+user = root
+password = root
+hosts = localhost
+dbname = postfix
+table = domain
+select_field = domain
+where_field = domain
