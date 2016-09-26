@@ -11,7 +11,7 @@ RUN /scripts/php_enable.sh curl exif iconv imap intl ldap mysqli pdo_mysql zip &
     sed --in-place 's:ExecStart=/usr/sbin/mysqld:ExecStart=/usr/sbin/mysqld --datadir=/data/mysql:' /usr/lib/systemd/system/mariadb.service && \
     sed --in-place 's/HELO_reject = SPF_Not_Pass/HELO_reject = Fail/' /etc/python-policyd-spf/policyd-spf.conf && \
     /scripts/service_enable.sh mariadb dovecot php-fpm opendkim opendmarc nginx postfix postsrsd && \
-    mkdir -p /data/cert /data/dkim /etc/nginx/servers-enabled && \
+    mkdir /data /etc/nginx/servers-enabled && \
     groupadd -g 5000 vmail && \
     useradd -u 5000 -g vmail -s /usr/bin/nologin -d /data/mail -m vmail && \
     postmap /etc/postfix/transport && \

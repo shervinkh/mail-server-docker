@@ -11,7 +11,7 @@ then
     exit 0
 fi
 
-mkdir -p /data/{mail,postsrsd}
+mkdir -p /data/{cert,dkim,sieve,mail,postsrsd}
 [ -e /data/mysql/mysql ] || mysql_install_db --user=mysql --basedir=/usr --datadir=/data/mysql
 [ -e /data/postsrsd/postsrsd.secret ] || dd if=/dev/urandom bs=18 count=1 status=none | base64 > /data/postsrsd/postsrsd.secret
 chown -R vmail:vmail /data/mail
@@ -61,6 +61,8 @@ chmod 400 /data/dkim/*.private
 chmod 444 /data/dkim/*.txt
 
 /scripts/set_setup_password.sh ${SETUP_PASSWORD}
+
+chown -R vmail:vmail /data/sieve/
 
 touch /root/.initialized
 echo "Initialized!"
