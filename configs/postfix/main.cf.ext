@@ -1,6 +1,4 @@
 
-myhostname = example.com
-mydomain = example.com
 mydestination = localhost
 
 non_smtpd_milters=inet:127.0.0.1:8891, inet:127.0.0.1:8893

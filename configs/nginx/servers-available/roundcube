@@ -5,8 +5,8 @@ server {
     index           index.php;
     charset         utf-8;
 
-    access_log /var/log/nginx/roundcube_access.log;
-    error_log /var/log/nginx/roundcube_error.log;
+    access_log /data/log/nginx/roundcube.access.log;
+    error_log /data/log/nginx/roundcube.error.log;
 
     # Favicon
     location ~ ^/favicon.ico$ {

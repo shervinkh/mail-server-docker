@@ -5,24 +5,20 @@ if [ ! ${MAIN_DOMAIN} ]; then export MAIN_DOMAIN=example.com; fi
 if [ ! ${ALL_DOMAINS} ]; then export ALL_DOMAINS=example.com,example.org; fi
 if [ ! ${SETUP_PASSWORD} ]; then export SETUP_PASSWORD=admin; fi
 
-if [ -e /root/.initialized ]
+if [ ! -e /root/.initialized ]
 then
-    echo "Already initialized!"
-    exit 0
-fi
-
-mkdir -p /data/{cert,dkim,sieve,mail,postsrsd}
+mkdir -p /data/{cert,dkim,sieve,mail,postsrsd,opendmarc,log/{supervisor,nginx}}
+chown root:root /data
 [ -e /data/mysql/mysql ] || mysql_install_db --user=mysql --basedir=/usr --datadir=/data/mysql
 [ -e /data/postsrsd/postsrsd.secret ] || dd if=/dev/urandom bs=18 count=1 status=none | base64 > /data/postsrsd/postsrsd.secret
 chown -R vmail:vmail /data/mail
+chown -R opendmarc:postfix /data/opendmarc
 chown -R postsrsd:root /data/postsrsd
 chmod 400 /data/postsrsd/postsrsd.secret
 
 echo "myhostname = ${MAIL_SERVER}" >> /etc/postfix/main.cf
 echo "mydomain = ${MAIN_DOMAIN}" >> /etc/postfix/main.cf
-echo "SRS_DOMAIN=${MAIN_DOMAIN}" >> /etc/postsrsd/postsrsd
-echo "SRS_EXCLUDE_DOMAINS=${ALL_DOMAINS}" >> /etc/postsrsd/postsrsd
-chown -R postsrsd:root /etc/postsrsd/
+sed --in-place "s/__DOMAIN__/${MAIN_DOMAIN}/;s/__DOMAINS__/${ALL_DOMAINS}/" /etc/supervisor.d/srs.ini
 
 [ -e /data/cert/mail_dhparams.pem ] || openssl dhparam -out /data/cert/mail_dhparams.pem 2048
 ([ -e /data/cert/mail.key ] && [ -e /data/cert/mail.crt ]) || openssl req -new -x509 -nodes -newkey rsa:4096 -keyout /data/cert/mail.key -out /data/cert/mail.crt -days 3650 <<EOF
@@ -60,10 +56,12 @@ chown -R opendkim:mail /data/dkim
 chmod 400 /data/dkim/*.private
 chmod 444 /data/dkim/*.txt
 
-/scripts/set_setup_password.sh ${SETUP_PASSWORD}
-
 chown -R vmail:vmail /data/sieve/
 
+/scripts/set_setup_password.sh ${SETUP_PASSWORD}
+/scripts/initialize_des_key.sh
+
 touch /root/.initialized
-echo "Initialized!"
+echo "Initialized data directory!"
+fi
 

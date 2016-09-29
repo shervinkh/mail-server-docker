@@ -102,3 +102,5 @@ $config['password_query'] = 'UPDATE mailbox SET password=%c WHERE username=%u';
 $rcmail_config['create_default_folders'] = true;
 $rcmail_config['protect_default_folders'] = true;
 
+$config['log_driver'] = 'syslog';
+
