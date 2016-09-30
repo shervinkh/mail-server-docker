@@ -7,7 +7,7 @@ if [ ! ${SETUP_PASSWORD} ]; then export SETUP_PASSWORD=admin; fi
 
 if [ ! -e /root/.initialized ]
 then
-mkdir -p /data/{cert,dkim,sieve,mail,postsrsd,opendmarc,log/{supervisor,nginx}}
+mkdir -p /data/{cert,dkim,sieve,mail,postsrsd,opendmarc}
 chown root:root /data
 [ -e /data/mysql/mysql ] || mysql_install_db --user=mysql --basedir=/usr --datadir=/data/mysql
 [ -e /data/postsrsd/postsrsd.secret ] || dd if=/dev/urandom bs=18 count=1 status=none | base64 > /data/postsrsd/postsrsd.secret
@@ -39,10 +39,17 @@ sed --in-place -e "s/CERT_PEER_CN/${MAIL_SERVER}/" /etc/webapps/roundcubemail/co
 chmod 400 /data/cert/mail.key
 chmod 444 /data/cert/mail.crt
 
+if [ "${AUTO_DKIM}" == true ]
+then
+    rm -f /data/dkim/SigningTable
+fi
+
 ([ -e /data/dkim/KeyTable ] && [ -e /data/dkim/SigningTable ] && [ -e /data/dkim/TrustedHosts ]) || (
-opendkim-genkey -r -s main -d ${MAIN_DOMAIN} -D /data/dkim -b 4096
+[ -e /data/dkim/main.private ] || opendkim-genkey -r -s main -d ${MAIN_DOMAIN} -D /data/dkim -b 4096
 
 domains=$(echo ${ALL_DOMAINS} | tr "," "\n")
+truncate /data/dkim/Keytable --size 0
+truncate /data/dkim/Signingtable --size 0
 echo "127.0.0.1" > /data/dkim/TrustedHosts
 for domain in $domains
 do
@@ -60,6 +67,8 @@ chown -R vmail:vmail /data/sieve/
 
 /scripts/set_setup_password.sh ${SETUP_PASSWORD}
 /scripts/initialize_des_key.sh
+
+mkdir -p /var/log/{supervisor,nginx}
 
 touch /root/.initialized
 echo "Initialized data directory!"

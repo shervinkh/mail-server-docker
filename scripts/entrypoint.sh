@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/scripts/initializer.sh && (/scripts/mysql_initializer.sh & /usr/bin/supervisord)
+/scripts/initialize.sh && (/scripts/mysql_initialize.sh & /usr/bin/supervisord)
 
