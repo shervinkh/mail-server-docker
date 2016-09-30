@@ -15,6 +15,8 @@ RUN /scripts/php_enable.sh curl exif iconv imap intl ldap mysqli pdo_mysql zip &
     mkdir /data /etc/nginx/servers-enabled /var/spool/rsyslog && \
     groupadd -g 5000 vmail && \
     useradd -u 5000 -g vmail -s /usr/bin/nologin -d /data/mail -m vmail && \
+    groupadd -g 89 -f mysql && \
+    (id -u mysql &> /dev/null || useradd -u 89 -g mysql -d /var/lib/mysql -m mysql) && \
     postmap /etc/postfix/transport && \
     rm -rf /etc/postsrsd/ && \
     /scripts/nginx_enable.sh postfixadmin roundcube && \
