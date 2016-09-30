@@ -1,6 +1,6 @@
 FROM shervinkh/my-archlinux
 MAINTAINER "Shervin Khastoo" <shervinkh145@gmail.com>
-COPY scripts /scripts
+COPY scripts /scripts/
 RUN /update.sh && \
     pacman -S --noconfirm postfix mariadb dovecot opendkim opendmarc roundcubemail pigeonhole nginx-mainline php-imap php-intl postfixadmin php-fpm binutils python fakeroot python-setuptools cmake help2man gcc make && \
     /scripts/aur_install.sh python-pydns python-pyspf python-postfix-policyd-spf postsrsd && \
