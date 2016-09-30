@@ -48,8 +48,8 @@ fi
 [ -e /data/dkim/main.private ] || opendkim-genkey -r -s main -d ${MAIN_DOMAIN} -D /data/dkim -b 4096
 
 domains=$(echo ${ALL_DOMAINS} | tr "," "\n")
-truncate /data/dkim/Keytable --size 0
-truncate /data/dkim/Signingtable --size 0
+truncate /data/dkim/KeyTable --size 0
+truncate /data/dkim/SigningTable --size 0
 echo "127.0.0.1" > /data/dkim/TrustedHosts
 for domain in $domains
 do
