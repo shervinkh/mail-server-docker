@@ -27,5 +27,5 @@ RUN /scripts/php_enable.sh curl exif iconv imap intl ldap mysqli pdo_mysql zip &
     chown -R opendmarc:postfix /etc/opendmarc
 VOLUME ["/data"]
 ENTRYPOINT ["/scripts/entrypoint.sh"]
-EXPOSE 25 143 587 993
+EXPOSE 25 143 587 993 8001 8002 9001
 
