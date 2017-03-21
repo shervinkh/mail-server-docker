@@ -53,7 +53,6 @@ truncate /data/dkim/SigningTable --size 0
 echo -e "127.0.0.1\n172.16.0.0/12" > /data/dkim/TrustedHosts
 for domain in $domains
 do
-    echo "$domain" >> /data/dkim/TrustedHosts
     echo "main._domainkey.$domain $domain:main:/data/dkim/main.private" >> /data/dkim/KeyTable
     echo "*@$domain main._domainkey.$domain" >> /data/dkim/SigningTable
 done
