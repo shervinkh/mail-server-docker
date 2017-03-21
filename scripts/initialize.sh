@@ -50,7 +50,7 @@ fi
 domains=$(echo ${ALL_DOMAINS} | tr "," "\n")
 truncate /data/dkim/KeyTable --size 0
 truncate /data/dkim/SigningTable --size 0
-echo "127.0.0.1" > /data/dkim/TrustedHosts
+echo -e "127.0.0.1\n172.16.0.0/12" > /data/dkim/TrustedHosts
 for domain in $domains
 do
     echo "$domain" >> /data/dkim/TrustedHosts
