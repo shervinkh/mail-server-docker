@@ -73,6 +73,7 @@ touch /root/.initialized
 echo "Initialized data directory!"
 fi
 
+mkdir -p /etc/dovecot/sieve-filter/
 [ -e /etc/dovecot/sieve-filter/spamc ] || ln -s /usr/bin/vendor_perl/spamc /etc/dovecot/sieve-filter/spamc
 [ -e /etc/dovecot/sieve.before.d/spamassassin.svbin ] || (cd /etc/dovecot/sieve.before.d && sievec spamassassin.sieve)
 /scripts/update_sa.sh
