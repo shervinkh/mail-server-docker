@@ -7,7 +7,7 @@ if [ ! ${SETUP_PASSWORD} ]; then export SETUP_PASSWORD=admin; fi
 
 if [ ! -e /root/.initialized ]
 then
-mkdir -p /data/{cert,dkim,sieve,mail,postsrsd,opendmarc}
+mkdir -p /data/{cert,dkim,sieve,mail,postsrsd,opendmarc,spamassassin}
 chown root:root /data
 [ -e /data/mysql/mysql ] || mysql_install_db --user=mysql --basedir=/usr --datadir=/data/mysql
 [ -e /data/postsrsd/postsrsd.secret ] || dd if=/dev/urandom bs=18 count=1 status=none | base64 > /data/postsrsd/postsrsd.secret
@@ -50,7 +50,7 @@ fi
 domains=$(echo ${ALL_DOMAINS} | tr "," "\n")
 truncate /data/dkim/KeyTable --size 0
 truncate /data/dkim/SigningTable --size 0
-echo -e "127.0.0.1\n172.16.0.0/12" > /data/dkim/TrustedHosts
+echo -e "127.0.0.1\n::1\n172.16.0.0/12\nfc00::/7" > /data/dkim/TrustedHosts
 for domain in $domains
 do
     echo "main._domainkey.$domain $domain:main:/data/dkim/main.private" >> /data/dkim/KeyTable
@@ -72,4 +72,8 @@ mkdir -p /var/log/{supervisor,nginx}
 touch /root/.initialized
 echo "Initialized data directory!"
 fi
+
+[ -e /etc/dovecot/sieve-filter/spamc ] || ln -s /usr/bin/vendor_perl/spamc /etc/dovecot/sieve-filter/spamc
+[ -e /etc/dovecot/sieve.before.d/spamassassin.svbin ] || (cd /etc/dovecot/sieve.before.d && sievec spamassassin.sieve)
+/scripts/update_sa.sh
 

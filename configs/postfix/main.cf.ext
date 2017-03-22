@@ -1,5 +1,6 @@
 
 mydestination = localhost
+mynetworks = 127.0.0.0/8 [::1]/128 172.16.0.0/12 [fc00::]/7
 
 non_smtpd_milters=inet:127.0.0.1:8891, inet:127.0.0.1:8893
 smtpd_milters=inet:127.0.0.1:8891, inet:127.0.0.1:8893
